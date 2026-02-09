@@ -1,9 +1,13 @@
 {
-    "name": "VRChatPackageTemplate.Editor",
-    "references": [],
-    "includePlatforms": [
-        "Editor"
+    "name": "Vincil.VUSharp.ContactButton.Examples",
+    "rootNamespace": "",
+    "references": [
+        "UdonSharp.Runtime",
+        "VRC.Udon",
+        "Unity.TextMeshPro",
+        "Vincil.VUSharp.ContactButton"
     ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

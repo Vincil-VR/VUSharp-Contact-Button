@@ -1,0 +1,26 @@
+{
+  "name": "com.vincil.vusharp.contact-button",
+  "displayName": "VUSharp Contact Button",
+  "version": "0.0.1",
+  "unity": "2022.3",
+  "description": "A physically clickable button for VRChat Worlds",
+  "vrchatVersion": "2022.1.1",
+  "author": {
+    "name": "Vincil",
+    "email": "vincilvrdev@gmail.com",
+    "url": "https://github.com/Vincil-VR"
+  },
+  "vpmDependencies": {
+    "com.vrchat.worlds": "3.x.x"
+  },
+  "resolutionStrategy": "highestMinor",
+  "documentationUrl": "https://github.com/Vincil-VR/",
+  "license": "MIT",
+  "samples": [
+    {
+      "displayName": "Simple Example",
+      "description": "Demonstrates how the buttons can be used to drive scripts",
+      "path": "Samples/SimpleExample"
+    }
+  ]
+}
