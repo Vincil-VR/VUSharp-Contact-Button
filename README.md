@@ -20,7 +20,7 @@ A 3d, tactile, physically interactable button for VRChat Worlds designed as a ne
 
 ### VRChat Package Manager
 
-(add link)
+https://vincil-vr.github.io/VUSharp-Contact-Button/
 
 ### Unity Package Manager
 
