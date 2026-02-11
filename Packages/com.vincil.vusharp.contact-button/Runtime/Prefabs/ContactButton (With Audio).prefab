@@ -207,6 +207,57 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1407395329424252894, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: proximity
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: onClickEventReceiversArray.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: onUnclickEventReceiversArray.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: onClickEventReceiversArray.Array.data[0]
+      value: 
+      objectReference: {fileID: 1524543029790159263}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: onUnclickEventReceiversArray.Array.data[0]
+      value: 
+      objectReference: {fileID: 1524543029790159263}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: onClickEventReceiverMethodNamesArray.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: onUnclickEventReceiverMethodNamesArray.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: onClickEventReceiverMethodNamesArray.Array.data[0]
+      value: _OnButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 6429743097840328137, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
+        type: 3}
+      propertyPath: onUnclickEventReceiverMethodNamesArray.Array.data[0]
+      value: _OnButtonUnclicked
+      objectReference: {fileID: 0}
     - target: {fileID: 6502797075399976525, guid: 9ddbe168e87b6fe4196d310d26caa8d9,
         type: 3}
       propertyPath: m_LocalPosition.x

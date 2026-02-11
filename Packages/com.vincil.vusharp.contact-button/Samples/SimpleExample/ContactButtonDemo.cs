@@ -8,50 +8,58 @@ namespace Vincil.VUSharp.UI.ContactButton.Example
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class ContactButtonDemo : UdonSharpBehaviour
     {
-        [SerializeField] ContactButton joinContactButton;
-        [SerializeField] TextMeshProUGUI joinButtonTextField;
+        [SerializeField] ContactButton allowClickingContactButton;
+        [SerializeField] ContactButton clickerContactButton;
+        [SerializeField] TextMeshProUGUI clickerButtonTextField;
+        [SerializeField] TextMeshProUGUI toggleUsingContactButtonTextField;
         [SerializeField] TextMeshProUGUI demoTextField;
 
-        bool hasPlayerJoined = false;
+        int timesButtonClicked = 0;
 
-        bool allowPlayerToJoin = true;
+        bool allowPlayerToClick = true;
+        bool usingContacts = true;
 
         public void Start()
         {
-            joinButtonTextField.text = "Join";
-            demoTextField.text = "Player can join game!";
+            toggleUsingContactButtonTextField.text = "Stop Using Contacts";
+            clickerButtonTextField.text = "I Can Be Clicked";
+            demoTextField.text = $"Times button has been clicked:\n{timesButtonClicked}";
         }
 
-        public void _OnAllowJoinButtonClicked()
+        public void _OnAllowButtonClicked()
         {
-            allowPlayerToJoin = !allowPlayerToJoin;
-            joinContactButton.Interactable = allowPlayerToJoin;
+            allowPlayerToClick = !allowPlayerToClick;
+            clickerContactButton.Interactable = allowPlayerToClick;
 
-            if (allowPlayerToJoin)
+            if (allowPlayerToClick)
             {
-                demoTextField.text = "Player can join game!";
+                clickerButtonTextField.text = "I Can Be Clicked";
             }
             else
             {
-                demoTextField.text = "Player cannot join game!";
-                joinButtonTextField.text = "Join";
-                hasPlayerJoined = false;
+                clickerButtonTextField.text = "I Can't Be Clicked";
             }
         }
 
-        public void _OnJoinButtonClicked()
+        public void _OnClickButtonClicked()
         {
-            hasPlayerJoined = !hasPlayerJoined;
-            if (hasPlayerJoined)
+            timesButtonClicked++;
+            demoTextField.text = $"Times button has been clicked:\n{timesButtonClicked}";
+        }
+
+        public void _OnToggleUseContactButtonClicked()
+        {
+            usingContacts = !usingContacts;
+            if (usingContacts)
             {
-                joinButtonTextField.text = "Leave";
-                demoTextField.text = "Player has joined game!";
+                toggleUsingContactButtonTextField.text = "Stop Using Contacts";
             }
             else
             {
-                joinButtonTextField.text = "Join";
-                demoTextField.text = "Player can join game!";
+                toggleUsingContactButtonTextField.text = "Start Using Contacts";
             }
+            clickerContactButton.UseContact = usingContacts;
+            allowClickingContactButton.UseContact = usingContacts;
         }
     }
 }

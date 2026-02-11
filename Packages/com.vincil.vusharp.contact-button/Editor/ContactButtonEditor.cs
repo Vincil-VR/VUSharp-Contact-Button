@@ -1,9 +1,12 @@
+using UdonSharp;
+using UdonSharpEditor;
 using UnityEditor;
 using UnityEngine;
+using VRC.Udon;
 
 namespace Vincil.VUSharp.UI.ContactButton
 {
-    [CustomEditor(typeof(ContactButton))]
+    [CustomEditor(typeof(ContactButtonImplementation))]
     public class ContactButtonEditor : Editor
     {
         private SerializedProperty onClickEventReceiversProperty;
@@ -28,7 +31,11 @@ namespace Vincil.VUSharp.UI.ContactButton
 
         public override void OnInspectorGUI()
         {
+            //if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(target)) return;
+
             DrawDefaultInspector();
+
+            DrawInteractSettings();
 
             // Update the serialized object to get the latest values
             serializedObject.Update();
@@ -90,6 +97,43 @@ namespace Vincil.VUSharp.UI.ContactButton
                 EditorGUILayout.PropertyField(stringElement, GUIContent.none, GUILayout.MinWidth(30));
 
                 EditorGUILayout.EndHorizontal();
+            }
+        }
+
+        private void DrawInteractSettings()
+        {
+            UdonBehaviour backingBehaviour = UdonSharpEditorUtility.GetBackingUdonBehaviour((UdonSharpBehaviour)target);
+
+            string currentText = backingBehaviour.interactText;
+
+            EditorGUI.BeginChangeCheck();
+
+            string newInteractText = EditorGUILayout.TextField("Interaction Text", currentText);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                Undo.RecordObject(backingBehaviour, "Change interact text");
+                backingBehaviour.interactText = newInteractText;
+
+                if (PrefabUtility.IsPartOfPrefabInstance(backingBehaviour))
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(backingBehaviour);
+            }
+
+            float currentProximity = backingBehaviour.proximity;
+
+            EditorGUI.BeginChangeCheck();
+            float newProximity = EditorGUILayout.Slider("Proximity", currentProximity, 0f, 100f);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (newProximity >= 0f)
+                {
+                    Undo.RecordObject(backingBehaviour, "Change interact distance");
+                    backingBehaviour.proximity = newProximity;
+
+                    if (PrefabUtility.IsPartOfPrefabInstance(backingBehaviour))
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(backingBehaviour);
+                }
             }
         }
     }
