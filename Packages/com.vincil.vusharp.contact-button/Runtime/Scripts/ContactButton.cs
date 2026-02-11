@@ -61,8 +61,8 @@ namespace Vincil.VUSharp.UI.ContactButton
         [SerializeField, HideInInspector] protected string[] onUnclickEventReceiverMethodNamesArray;
         public abstract void AddOnClickListener(UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName);
         public abstract void AddOnClickListener(UdonBehaviour udonBehaviour, string MethodToCallName);
-        public abstract void AddOnUnclickListener(UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName);
-        public abstract void AddOnUnclickListener(UdonBehaviour udonBehaviour, string MethodToCallName);
+        public abstract void AddOnReleaseListener(UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName);
+        public abstract void AddOnReleaseListener(UdonBehaviour udonBehaviour, string MethodToCallName);
 
         protected abstract void SetInteractable(bool value);
 

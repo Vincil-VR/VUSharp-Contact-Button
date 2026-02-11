@@ -45,7 +45,7 @@ namespace Vincil.VUSharp.UI.ContactButton
             HandleParallelArray(onClickEventReceiversProperty, onClickEventReceiverMethodNamesProperty, ref onClickNewSize);
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("OnUnclick Listeners (UdonBehaviour & Method Names)", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("OnRelease Listeners (UdonBehaviour & Method Names)", EditorStyles.boldLabel);
             HandleParallelArray(onUnclickEventReceiversProperty, onUnclickEventReceiverMethodNamesProperty, ref onUnclickNewSize);
 
             // Apply all modifications and support Undo/Redo
@@ -92,7 +92,7 @@ namespace Vincil.VUSharp.UI.ContactButton
                 SerializedProperty stringElement = stringArrayProperty.GetArrayElementAtIndex(i);
 
                 // Draw the fields on the same horizontal line
-                EditorGUILayout.LabelField("Element " + i, GUILayout.Width(80));
+                //EditorGUILayout.LabelField("Element " + i, GUILayout.Width(80));
                 EditorGUILayout.PropertyField(objectReferenceElement, GUIContent.none, GUILayout.MinWidth(50));
                 EditorGUILayout.PropertyField(stringElement, GUIContent.none, GUILayout.MinWidth(30));
 

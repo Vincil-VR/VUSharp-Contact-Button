@@ -89,6 +89,12 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "com.vincil.vusharp.contact-button": {
+      "version": "file:com.vincil.vusharp.contact-button",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.vrchat.core.bootstrap": {
       "version": "file:com.vrchat.core.bootstrap",
       "depth": 0,
@@ -105,8 +111,8 @@
         "com.unity.nuget.newtonsoft-json": "3.0.2"
       }
     },
-    "com.vrchat.demo-template": {
-      "version": "file:com.vrchat.demo-template",
+    "test.big.test": {
+      "version": "file:test.big.test",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

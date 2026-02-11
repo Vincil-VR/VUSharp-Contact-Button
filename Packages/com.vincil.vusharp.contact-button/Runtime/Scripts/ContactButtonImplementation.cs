@@ -205,13 +205,13 @@ namespace Vincil.VUSharp.UI.ContactButton
             onClickEventReceiverMethodNames.Add(MethodToCallName);
         }
 
-        public override void AddOnUnclickListener(UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName)
+        public override void AddOnReleaseListener(UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName)
         {
             onUnclickEventReceivers.Add(udonSharpBehaviour);
             onUnclickEventReceiverMethodNames.Add(MethodToCallName);
         }
 
-        public override void AddOnUnclickListener(UdonBehaviour udonBehaviour, string MethodToCallName)
+        public override void AddOnReleaseListener(UdonBehaviour udonBehaviour, string MethodToCallName)
         {
             onUnclickEventReceivers.Add(udonBehaviour);
             onUnclickEventReceiverMethodNames.Add(MethodToCallName);
