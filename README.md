@@ -1,76 +1,164 @@
-# VPM Package Template
+# VUSharp Contact Button
 
-Starter for making Packages, including automation for building and publishing them.
+A 3d, tactile, physically interactable button for VRChat Worlds designed as a near-equivalent replacement to a Unity UI Button.  
 
-Once you're all set up, you'll be able to push changes to this repository and have .zip and .unitypackage versions automatically generated, and a listing made which works in the VPM for delivering updates for this package. If you want to make a listing with a variety of packages, check out our [template-package-listing](https://github.com/vrchat-community/template-package-listing) repo.
+## Features
 
-## ▶ Getting Started
+- Buttons that use [VRC Contacts](https://creators.vrchat.com/common-components/contacts/) to create physically clickable buttons
 
-* Press [![Use This Template](https://user-images.githubusercontent.com/737888/185467681-e5fdb099-d99f-454b-8d9e-0760e5a6e588.png)](https://github.com/vrchat-community/template-package/generate)
-to start a new GitHub project based on this template.
-  * Choose a fitting repository name and description.
-  * Set the visibility to 'Public'. You can also choose 'Private' and change it later.
-  * You don't need to select 'Include all branches.'
-* Clone this repository locally using Git.
-  * If you're unfamiliar with Git and GitHub, [visit GitHub's documentation](https://docs.github.com/en/get-started/quickstart/git-and-github-learning-resources) to learn more.
-* Add the folder to Unity Hub and open it as a Unity Project.
-* After opening the project, wait while the VPM resolver is downloaded and added to your project.
-  * This gives you access to the VPM Package Maker and Package Resolver tools.
+- Able to communicate with any UdonBehaviour/UdonSharpBehaviour using SendCustomEvent
 
-## 🚇 Migrating Assets Package
-Full details at [Converting Assets to a VPM Package](https://vcc.docs.vrchat.com/guides/convert-unitypackage)
+- Freely position, rotate, and resize the buttons
 
-## ✏️ Working on Your Package
+- Haptic feedback
 
-* Delete the "Packages/com.vrchat.demo-template" directory or reuse it for your own package.
-  * If you reuse the package, don't forget to rename it and add generated meta files to your repository!
-* Update the `.gitignore` file in the "Packages" directory to include your package.
-  * For example, change `!com.vrchat.demo-template` to `!com.username.package-name`.
-  * `.gitignore` files normally *exclude* the contents of your "Packages" directory. This `.gitignore` in this template show how to *include* the demo package. You can easily change this out for your own package name.
-* Open the Unity project and work on your package's files in your favorite code editor.
-* When you're ready, commit and push your changes.
-* Once you've set up the automation as described below, you can easily publish new versions.
+- Option to toggle to a fallback system that uses [Interact()](https://creators.vrchat.com/worlds/udon/graph/event-nodes/#interact)
 
-## 🤖 Setting up the Automation
+- Non-VR users automatically use the fallback method
 
-Create a repository variable with the name and value described below.
-For details on how to create repository variables, see [Creating Configuration Variables for a Repository](https://docs.github.com/en/actions/learn-github-actions/variables#creating-configuration-variables-for-a-repository).
-Make sure you are creating a **repository variable**, and not a **repository secret**.
+## How to install
 
-* `PACKAGE_NAME`: the name of your package, like `com.vrchat.demo-template`.
+### VRChat Package Manager
 
-Finally, go to the "Settings" page for your repo, then choose "Pages", and look for the heading "Build and deployment". Change the "Source" dropdown from "Deploy from a branch" to "GitHub Actions".
+https://vincil-vr.github.io/VUSharp-Contact-Button/
 
-That's it!
-Some other notes:
-* We highly recommend you keep the existing folder structure of this template.
-  * The root of the project should be a Unity project.
-  * Your packages should be in the "Packages" directory.
-  * If you deviate from this folder structure, you'll need to update the paths that assume your package is in the "Packages" directory on lines 24, 38, 41 and 57.
-* If you want to store and generate your web files in a folder other than "Website" in the root, you can change the `listPublicDirectory` item [here in build-listing.yml](.github/workflows/build-listing.yml#L17).
+### Unity Package Manager
 
-## 🎉 Publishing a Release
+In your Unity project, go to `Window > Package Manager` then click the top left `+`, click on `Add package from git URL` and paste this link:   
 
-You can make a release by running the [Build Release](.github/workflows/release.yml) action. The version specified in your `package.json` file will be used to define the version of the release.
+<https://github.com/Vincil-VR/VUSharp-Contact-Button/tree/main/Packages/com.vincil.vusharp.contact-button>  
 
-## 📃 Rebuilding the Listing
+### Unity Package
 
-Whenever you make a change to a release - manually publishing it, or manually creating, editing or deleting a release, the [Build Repo Listing](.github/workflows/build-listing.yml) action will make a new index of all the releases available, and publish them as a website hosted fore free on [GitHub Pages](https://pages.github.com/). This listing can be used by the VPM to keep your package up to date, and the generated index page can serve as a simple landing page with info for your package. The URL for your package will be in the format `https://username.github.io/repo-name`.
+Download the latest package from the [latest release](https://github.com/Vincil-VR/VUSharp-Contact-Button/releases/latest)
 
-## 🏠 Customizing the Landing Page (Optional)
 
-The action which rebuilds the listing also publishes a landing page. The source for this page is in `Website/index.html`. The automation system uses [Scriban](https://github.com/scriban/scriban) to fill in the objects like `{{ this }}` with information from the latest release's manifest, so it will stay up-to-date with the name, id and description that you provide there. You are welcome to modify this page however you want - just use the existing `{{ template.objects }}` to fill in that info wherever you like. The entire contents of your "Website" folder are published to your GitHub Page each time.
+Then import the contained .unitypackage
 
-## 💻 Technical Stuff
 
-You are welcome to make your own changes to the automation process to make it fit your needs, and you can create Pull Requests if you have some changes you think we should adopt. Here's some more info on the included automation:
+## Usage
 
-### Build Release Action
-[release.yml](/.github/workflows/release.yml)
 
-This is a composite action combining a variety of existing GitHub Actions and some shell commands to create both a .zip of your Package and a .unitypackage. It creates a release which is named for the `version` in the `package.json` file found in your target Package, and publishes the zip, the unitypackage and the package.json file to this release.
+1. In your Udon script, add a public method that takes no parameters that you want called when the button is clicked.  Optionally you can add a method that will be called when the button is released.
 
-### Build Repo Listing
-[build-listing.yml](.github/workflows/build-listing.yml)
+2. Right click in your scene's hierarchy and navigate to the Contact Buttons submenu.  Select the Contact Button of your choosing.
 
-This is a composite action which builds a vpm-compatible [Repo Listing](https://vcc.docs.vrchat.com/vpm/repos) based on the releases you've created. In order to find all your releases and combine them into a listing, it checks out [another repository](https://github.com/vrchat-community/package-list-action) which has a [Nuke](https://nuke.build/) project which includes the VPM core lib to have access to its types and methods. This project will be expanded to include more functionality in the future - for now, the action just calls its `BuildRepoListing` target.
+  > Import `TMP Essential Resources` if prompted.
+
+3. Position the button however you want.
+
+4. Select the spawned Contact Button and navigate to the ContactButton component (it should be at the top right under the transform component).  Click the "Add" button under "OnClick Listeners (UdonBehaviour & Method Names)."  In the left field place your Udon script.  In the right enter the name of the method you want called.  Repeat the process for any OnRelease listeners you might have.
+
+
+## Button Objects
+
+Currently there are two button to choose from: the default Contact Button and a Contact Button preconfigured to play sound when clicked.
+
+## Scene
+
+### Serialized Fields
+
+|        Property        | Result                                                                                                                                                                                           |
+| :--------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|      Interactable      | Sets if the button can be interacted with                                                                                                                                                        |
+|      Use Haptics       | Sets if controller haptics should be used when the button is interacted with using contacts                                                                                                      |
+|      Use Contact       | Sets if the button should use contacts.  If not it will use the classic collider "Interact" method.  Players not in VR will always use the collider "Interact" method regardless of this setting |
+| Enabled Emissive Color | The emissive color the button's highlight will be when the button is enabled and not being pressed                                                                                               |
+| Pressed Emissive Color | The emissive color the button's highlight will be when the button is being pressed                                                                                                               |
+|    Interaction Text    | Text to display when using the fallback Interact() system.  Defaults to display nothing.                                                                                                         |
+|       Proximity        | Interaction range for the fallback Interact() system.                                                                                                                                            |
+|   OnClick Listeners    | Udon Behaviour / method name pairings that will be called when the button is clicked                                                                                                             |
+|  OnRelease Listeners   | Udon Behaviour / method name pairings that will be called when the button is released                                                                                                            |
+
+## Scripting
+
+
+If using UdonSharp include `using Vincil.VUSharp.UI.ContactButton` and access the script as `ContactButton`
+
+### Properties
+
+|   Property   | Result                                                                                                                                                                                           |
+| :----------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Interactable | Sets if the button can be interacted with                                                                                                                                                        |
+|  UseHaptics  | Sets if controller haptics should be used when the button is interacted with using contacts                                                                                                      |
+|  UseContact  | Sets if the button should use contacts.  If not it will use the classic collider "Interact" method.  Players not in VR will always use the collider "Interact" method regardless of this setting |
+
+### Functions
+
+|       Function       | Input                                                          | Result                                                                                                    |
+| :------------------: | :------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+|  AddOnClickListener  | UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName | Adds the behaviour/method name pairing to list of methods that will be called when the button is clicked  |
+|  AddOnClickListener  | UdonBehaviour udonBehaviour, string MethodToCallName           | Same as above                                                                                             |
+| AddOnReleaseListener | UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName | Adds the behaviour/method name pairing to list of methods that will be called when the button is released |
+| AddOnReleaseListener | UdonBehaviour udonBehaviour, string MethodToCallName           | Same as above                                                                                             |
+
+
+## Example:
+
+In `Samples>SimpleExample` folder contains a scene with a simple demonstration of the buttons in use.
+
+There is a button for iterating a counter, a button for disabling the prior button, and an additional button that toggles the other buttons between using contacts and the fallback system.
+
+The script used in the example:
+```c#
+namespace Vincil.VUSharp.UI.ContactButton.Example
+{
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
+    public class ContactButtonDemo : UdonSharpBehaviour
+    {
+        [SerializeField] ContactButton allowClickingContactButton;
+        [SerializeField] ContactButton clickerContactButton;
+        [SerializeField] TextMeshProUGUI clickerButtonTextField;
+        [SerializeField] TextMeshProUGUI toggleUsingContactButtonTextField;
+        [SerializeField] TextMeshProUGUI demoTextField;
+
+        int timesButtonClicked = 0;
+
+        bool allowPlayerToClick = true;
+        bool usingContacts = true;
+
+        public void Start()
+        {
+            toggleUsingContactButtonTextField.text = "Stop Using Contacts";
+            clickerButtonTextField.text = "I Can Be Clicked";
+            demoTextField.text = $"Times button has been clicked:\n{timesButtonClicked}";
+        }
+
+        public void _OnAllowButtonClicked()
+        {
+            allowPlayerToClick = !allowPlayerToClick;
+            clickerContactButton.Interactable = allowPlayerToClick;
+
+            if (allowPlayerToClick)
+            {
+                clickerButtonTextField.text = "I Can Be Clicked";
+            }
+            else
+            {
+                clickerButtonTextField.text = "I Can't Be Clicked";
+            }
+        }
+
+        public void _OnClickButtonClicked()
+        {
+            timesButtonClicked++;
+            demoTextField.text = $"Times button has been clicked:\n{timesButtonClicked}";
+        }
+
+        public void _OnToggleUseContactButtonClicked()
+        {
+            usingContacts = !usingContacts;
+            if (usingContacts)
+            {
+                toggleUsingContactButtonTextField.text = "Stop Using Contacts";
+            }
+            else
+            {
+                toggleUsingContactButtonTextField.text = "Start Using Contacts";
+            }
+            clickerContactButton.UseContact = usingContacts;
+            allowClickingContactButton.UseContact = usingContacts;
+        }
+    }
+}
+```
