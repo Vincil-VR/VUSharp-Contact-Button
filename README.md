@@ -26,11 +26,11 @@ A 3d, tactile, physically interactable button for VRChat Worlds designed as a ne
 
 In your Unity project, go to `Window > Package Manager` then click the top left `+`, click on `Add package from git URL` and paste this link:   
 
-<https://github.com/Vincil-VR/Udon-Contact-Button/tree/main/Packages/com.vincil.vusharp.contact-button>  
+<https://github.com/Vincil-VR/VUSharp-Contact-Button/tree/main/Packages/com.vincil.vusharp.contact-button>  
 
 ### Unity Package
 
-Download the latest package from the [latest release](https://github.com/Vincil-VR/VUSharp-Spectate-System/releases/latest)
+Download the latest package from the [latest release](https://github.com/Vincil-VR/VUSharp-Contact-Button/releases/latest)
 
 
 Then import the contained .unitypackage
