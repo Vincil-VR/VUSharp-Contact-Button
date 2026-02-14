@@ -2,8 +2,10 @@
 using System;
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.UI;
 using VRC.Dynamics;
 using VRC.SDK3.Data;
+using VRC.SDK3.Dynamics.Contact.Components;
 using VRC.SDKBase;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
@@ -11,103 +13,40 @@ using VRC.Udon.Common.Interfaces;
 namespace Vincil.VUSharp.UI.ContactButton
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    internal class ContactButtonImplementation : Contact3DButton
+    internal class ContactUIButtonImplementation : ContactUIButton
     {
-        GameObject _clickableButton;
-        GameObject clickableButton
+
+        Button _uiButton;
+        Button uiButton
         {
             get
             {
-                if (_clickableButton == null)
+                if (_uiButton == null)
                 {
-                    _clickableButton = transform.Find("ButtonClickable").gameObject;
-                    if (_clickableButton == null)
+                    _uiButton = GetComponent<Button>();
+                    if (_uiButton == null)
                     {
-                        Debug.LogError($"[ContactButton] Couldn't find a child named ButtonClickable on button {gameObject.name}! This will break the button!", gameObject);
+                        Debug.LogError($"[ContactButton] Couldn't find a UI Button!", gameObject);
                     }
                 }
-                return _clickableButton;
+                return _uiButton;
             }
         }
 
-        Renderer _buttonRenderer;
-        Renderer buttonRenderer
+        VRCContactReceiver _contactReceiver;
+        VRCContactReceiver contactReceiver
         {
             get
             {
-                if (_buttonRenderer == null && clickableButton != null)
+                if (_contactReceiver == null)
                 {
-                    _buttonRenderer = clickableButton.GetComponent<Renderer>();
-                    if (_buttonRenderer == null)
+                    _contactReceiver = GetComponent<VRCContactReceiver>();
+                    if (_contactReceiver == null)
                     {
-                        Debug.LogError($"[ContactButton] Couldn't find a Renderer on the ButtonClickable child of button {gameObject.name}! This will break the button!", gameObject);
+                        Debug.LogError($"[ContactButton] Couldn't find a Conctact Receiver!", gameObject);
                     }
                 }
-                return _buttonRenderer;
-            }
-        }
-
-        Collider _interactableCollider;
-        Collider interactableCollider
-        {
-            get
-            {
-                if (_interactableCollider == null)
-                {
-                    _interactableCollider = GetComponent<Collider>();
-                    if (_interactableCollider == null)
-                    {
-                        Debug.LogError($"[ContactButton] Couldn't find a Collider on button {gameObject.name}! This will break the button!", gameObject);
-                    }
-                }
-                return _interactableCollider;
-            }
-        }
-
-        Animator _buttonAnimator;
-        Animator buttonAnimator
-        {
-            get
-            {
-                if (_buttonAnimator == null)
-                {
-                    _buttonAnimator = GetComponent<Animator>();
-                    if (_buttonAnimator == null)
-                    {
-                        Debug.LogError($"[ContactButton] Couldn't find an Animator on button {gameObject.name}! This will break the button!", gameObject);
-                    }
-                }
-                return _buttonAnimator;
-            }
-        }
-
-        MaterialPropertyBlock _enabledMaterialPropertyBlock;
-        MaterialPropertyBlock enabledMaterialPropertyBlock
-        {
-            get
-            {
-                if (_enabledMaterialPropertyBlock == null)
-                {
-                    _enabledMaterialPropertyBlock = new MaterialPropertyBlock();
-                    _enabledMaterialPropertyBlock.SetColor("_Color", Color.black);
-                    _enabledMaterialPropertyBlock.SetColor("_EmissionColor", enabledEmissiveColor);
-                }
-                return _enabledMaterialPropertyBlock;
-            }
-        }
-
-        MaterialPropertyBlock _pressedMaterialPropertyBlock;
-        MaterialPropertyBlock pressedMaterialPropertyBlock
-        {
-            get
-            {
-                if (_pressedMaterialPropertyBlock == null)
-                {
-                    _pressedMaterialPropertyBlock = new MaterialPropertyBlock();
-                    _pressedMaterialPropertyBlock.SetColor("_Color", Color.black);
-                    _pressedMaterialPropertyBlock.SetColor("_EmissionColor", pressedEmissiveColor);
-                }
-                return _pressedMaterialPropertyBlock;
+                return _contactReceiver;
             }
         }
 
@@ -132,44 +71,26 @@ namespace Vincil.VUSharp.UI.ContactButton
 
         //bool needsDisabling = false;
 
-        int _buttonHighlightMaterialIndex = -1;
-        int buttonHighlightMaterialIndex
-        {
-            get
-            {
-                if (_buttonHighlightMaterialIndex == -1)
-                {
-                    for (int i = 0; i < buttonRenderer.sharedMaterials.Length; i++)
-                    {
-                        if (buttonRenderer.sharedMaterials[i].name == "ButtonHighlight")
-                        {
-                            _buttonHighlightMaterialIndex = i;
-                        }
-                    }
-
-                    if (buttonHighlightMaterialIndex == -1)
-                    {
-                        Debug.LogError($"[ContactButton] Couldn't find a material named ButtonHighlight on the ButtonClickable renderer for button {gameObject.name}!  This will break highlighting!", gameObject);
-                        _buttonHighlightMaterialIndex = 0;
-                    }
-                }
-                return _buttonHighlightMaterialIndex;
-            }
-        }
-
         readonly Vector3 buttonLocalFrontDirection = Vector3.back; // note: the button depth calcuations presume that button's thickness is along the z axis and are not tied to this variable
 
-        readonly float buttonClickDepth = 0.015f;
-        readonly float buttonReleaseDepth = 0.010f;
-        readonly float buttonThickness = 0.05f;
-        readonly float buttonMaxPressDepth = 0.022f;
+        Color buttonBaseColor;
+        Color buttonDisabledColor;
+
+
+        readonly float buttonClickSensitivity = 0.001f;
+        readonly float buttonReleaseSensitivity = 0.06f;
 
         void Start()
         {
             isInVR = Networking.LocalPlayer.IsUserInVR();
 
-            buttonAnimator.speed = 2f; // Speed up the animation so that it feels more responsive; the default animation is pretty slow otherwise
-            buttonAnimator.enabled = !(isInVR && UseContact);
+            buttonBaseColor = uiButton.colors.normalColor;
+            buttonDisabledColor = uiButton.colors.disabledColor;
+
+            if(uiButton.transition != Selectable.Transition.ColorTint)
+            {
+                Debug.LogWarning("[ContactButton] UI Contact button is attatched to a button with a transition not set to Color Tint.  Non-Color Tint transitions are currently not supported.");
+            }
 
             if (onClickEventReceiversArray != null && onClickEventReceiversArray.Length > 0)
             {
@@ -191,6 +112,8 @@ namespace Vincil.VUSharp.UI.ContactButton
 
             isUsingContact = UseContact && isInVR;
             SetInteractable(Interactable);
+
+            _UpdateContactSize();
         }
 
         public override void AddOnClickListener(UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName)
@@ -215,6 +138,37 @@ namespace Vincil.VUSharp.UI.ContactButton
         {
             onUnclickEventReceivers.Add(udonBehaviour);
             onUnclickEventReceiverMethodNames.Add(MethodToCallName);
+        }
+
+        public override void _UpdateContactSize()
+        {
+            RectTransform rectTransform = GetComponent<RectTransform>();
+            if (rectTransform == null)
+            {
+                Debug.LogError("[ContactButton] UI contact button isn't attatched to a rectTransform and cannot resize itself properly!");
+                return;
+            }
+            // Get the corners of the RectTransform in world space
+            Vector3[] corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+
+            // Calculate the width and height in world space
+            float worldWidth = Vector3.Distance(corners[0], corners[3]);
+            float worldHeight = Vector3.Distance(corners[0], corners[1]);
+
+            float xSize = worldWidth / transform.lossyScale.x;
+            float ySize = worldHeight / transform.lossyScale.y;
+            contactReceiver.height = Mathf.Max(xSize, ySize);
+            contactReceiver.radius = Mathf.Min(xSize, ySize) / 2;
+            if (xSize > ySize)
+            {
+                contactReceiver.rotation = Quaternion.Euler(0f, 0f, 90f);
+            }
+            else
+            {
+                contactReceiver.rotation = Quaternion.identity;
+            }
+            contactReceiver.ApplyConfigurationChanges();
         }
 
         protected override void SetInteractable(bool value)
@@ -245,13 +199,7 @@ namespace Vincil.VUSharp.UI.ContactButton
 
                 float signedDistance = Vector3.Dot(heading, worldAxisDirection);
 
-                //assumes the button's local z axis is the axis that gets pressed; also assumes uniform scaling or that the button's thickness is only scaled by the local z scale
-                //if these assumptions are not true, the button's behavior may be inconsistent with the visual representation
-                signedDistance /= transform.lossyScale.z;
-                
-                float buttonPressDepth = Mathf.Clamp(buttonThickness - signedDistance, 0, buttonMaxPressDepth);
-
-                if (!isClicked && buttonPressDepth >= buttonClickDepth)
+                if (!isClicked && signedDistance <= buttonClickSensitivity)
                 {
                     if (UseHaptics && isUsingFinger)
                     {
@@ -267,7 +215,7 @@ namespace Vincil.VUSharp.UI.ContactButton
                     }
                     OnClicked();
                 }
-                else if (isClicked && buttonPressDepth <= buttonReleaseDepth)
+                else if (isClicked && signedDistance >= buttonReleaseSensitivity)
                 {
                     if (UseHaptics && isUsingFinger)
                     {
@@ -284,62 +232,59 @@ namespace Vincil.VUSharp.UI.ContactButton
                     OnUnclicked();
                 }
 
-                clickableButton.transform.localPosition = buttonLocalFrontDirection * -buttonPressDepth;
-
                 SendCustomEventDelayedFrames(nameof(_TrackContactSenderLoop), 1);
             }
             else
             {
-                clickableButton.transform.localPosition = Vector3.zero;
                 isTrackingContact = false;
             }
         }
 
         private void EnableButton(bool value)
         {
-            UpdateColliderOrContactActive();
-
             if (value)
             {
-                if(buttonRenderer == null)
-                {
-                    Debug.LogError($"buttonRenderer is null");
-                }
-                if (enabledMaterialPropertyBlock == null)
-                {
-                    Debug.LogError($"enabledMaterialPropertyBlock is null");
-                }
-                buttonRenderer.SetPropertyBlock(enabledMaterialPropertyBlock, buttonHighlightMaterialIndex);
+                UpdateColliderOrContactActive();
             }
             else
             {
-                Debug.Log($"[ContactButton] Zeroing button");
-                clickableButton.transform.localPosition = Vector3.zero;
-                contactSenderToTrack = null;
-                buttonRenderer.SetPropertyBlock(null, buttonHighlightMaterialIndex);
+                contactReceiver.enabled = false;
+                var colors = uiButton.colors;
+                colors.disabledColor = buttonDisabledColor;
+                uiButton.colors = colors;
+                uiButton.interactable = false;
             }
         }
 
         private void UpdateColliderOrContactActive()
         {
-            interactableCollider.enabled = !isUsingContact && !isPlayingClickAnimation && Interactable;
-            if (interactableCollider.enabled)
+            if (isUsingContact)
             {
-                buttonAnimator.enabled = true;
+                contactReceiver.enabled = true;
+                var colors = uiButton.colors;
+                colors.disabledColor = buttonBaseColor;
+                uiButton.colors = colors;
+                uiButton.interactable = false;
             }
-            else if(!isPlayingClickAnimation)
+            else
             {
-                buttonAnimator.enabled = false;
+                contactReceiver.enabled = false;
+                var colors = uiButton.colors;
+                colors.disabledColor = buttonDisabledColor;
+                uiButton.colors = colors;
+                uiButton.interactable = true;
             }
-
-
-            //3.10.2-beta.1 whitelists the enabled property; need to check if that will work with contacts
         }
 
         private void OnClicked()
         {
             isClicked = true;
-            buttonRenderer.SetPropertyBlock(pressedMaterialPropertyBlock, buttonHighlightMaterialIndex);
+            if (isUsingContact)
+            {
+                var colors = uiButton.colors;
+                colors.disabledColor = colors.pressedColor;
+                uiButton.colors = colors;
+            }
             for (int i = onClickEventReceivers.Count - 1; i >= 0; i--)
             {
                 IUdonEventReceiver eventReceiver = (IUdonEventReceiver)onClickEventReceivers[i].Reference;
@@ -359,6 +304,16 @@ namespace Vincil.VUSharp.UI.ContactButton
         private void OnUnclicked()
         {
             isClicked = false;
+            var colors = uiButton.colors;
+            if (isUsingContact)
+            {
+                colors.disabledColor = buttonBaseColor;
+            }
+            else
+            {
+                colors.disabledColor = buttonDisabledColor;
+            }
+            uiButton.colors = colors;
             for (int i = onUnclickEventReceivers.Count - 1; i >= 0; i--)
             {
                 IUdonEventReceiver eventReceiver = (IUdonEventReceiver)onUnclickEventReceivers[i].Reference;
@@ -376,7 +331,7 @@ namespace Vincil.VUSharp.UI.ContactButton
 
             if (Interactable)
             {
-                buttonRenderer.SetPropertyBlock(enabledMaterialPropertyBlock, buttonHighlightMaterialIndex);
+
             }
             else
             {
@@ -384,39 +339,22 @@ namespace Vincil.VUSharp.UI.ContactButton
             }
         }
 
-        /// <summary>
-        /// Used for animation event; do not use
-        /// </summary>
-        public void _OnClickedAnimationEvent()
+        public void _OnUIButtonClicked()
         {
-            OnClicked();
-        }
-
-        /// <summary>
-        /// Used for animation event; do not use
-        /// </summary>
-        public void _OnUnClickedAnimationEvent()
-        {
-            OnUnclicked();
-        }
-
-        /// <summary>
-        /// Used for animation event; do not use
-        /// </summary>
-        public void _OnAnimationEndedAnimationEvent()
-        {
-            isPlayingClickAnimation = false;
-            UpdateColliderOrContactActive();
-        }
-
-        /// <summary>
-        /// VRChat Event; do not use
-        /// </summary>
-        public override void Interact()
-        {
-            isPlayingClickAnimation = true;
-            interactableCollider.enabled = false;
-            buttonAnimator.SetTrigger("Interact");
+            for (int i = onClickEventReceivers.Count - 1; i >= 0; i--)
+            {
+                IUdonEventReceiver eventReceiver = (IUdonEventReceiver)onClickEventReceivers[i].Reference;
+                string methodName = onClickEventReceiverMethodNames[i].String;
+                if (eventReceiver != null && !string.IsNullOrEmpty(methodName))
+                {
+                    eventReceiver.SendCustomEvent(methodName);
+                }
+                else
+                {
+                    onClickEventReceivers.RemoveAt(i);
+                    onClickEventReceiverMethodNames.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>
@@ -462,11 +400,8 @@ namespace Vincil.VUSharp.UI.ContactButton
                 {
                     OnUnclicked();
                 }
-                clickableButton.transform.localPosition = Vector3.zero;
                 contactSenderToTrack = null;
             }
         }
-
-        
     }
 }

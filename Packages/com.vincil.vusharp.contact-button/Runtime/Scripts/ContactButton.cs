@@ -47,13 +47,6 @@ namespace Vincil.VUSharp.UI.ContactButton
             }
         }
 
-        [Tooltip("The emissive color the button's highlight will be when the button is enabled and not being pressed")]
-        [ColorUsage(false, false)]
-        [SerializeField] protected Color enabledEmissiveColor = Color.white;
-        [Tooltip("The emissive color the button's highlight will be when the button is being pressed")]
-        [ColorUsage(false, false)]
-        [SerializeField] protected Color pressedEmissiveColor = Color.green;
-
         [SerializeField, HideInInspector] protected UdonBehaviour[] onClickEventReceiversArray;
         [SerializeField, HideInInspector] protected string[] onClickEventReceiverMethodNamesArray;
 

@@ -16,6 +16,11 @@ public class SpawnContactButtonMenuItems
     {
         CoreSpawner("Packages/com.vincil.vusharp.contact-button/Runtime/Prefabs/ContactButton (With Audio).prefab", menuCommand);
     }
+    [MenuItem("GameObject/Contact Buttons/Contact UI Button", false, 10)]
+    private static void SpawnContactUIButton(MenuCommand menuCommand)
+    {
+        CoreSpawner("Packages/com.vincil.vusharp.contact-button/Runtime/Prefabs/Contact UI Button.prefab", menuCommand);
+    }
 
     private static void CoreSpawner(string assetPath, MenuCommand menuCommand)
     {

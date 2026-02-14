@@ -282,13 +282,12 @@ MonoBehaviour:
   interactable: 1
   useHaptics: 1
   useContact: 1
-  enabledEmissiveColor: {r: 1, g: 1, b: 1, a: 1}
-  pressedEmissiveColor: {r: 0, g: 1, b: 0, a: 1}
-  clickableButton: {fileID: 7529816214365293387}
   onClickEventReceiversArray: []
   onClickEventReceiverMethodNamesArray: []
   onUnclickEventReceiversArray: []
   onUnclickEventReceiverMethodNamesArray: []
+  enabledEmissiveColor: {r: 1, g: 1, b: 1, a: 1}
+  pressedEmissiveColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!33 &5375481450571356861
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -423,9 +422,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactTextPlacement: {fileID: 0}
-  interactText: Use
+  interactText: 
   interactTextGO: {fileID: 0}
-  proximity: 2
+  proximity: 0.05
   SynchronizePosition: 0
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
