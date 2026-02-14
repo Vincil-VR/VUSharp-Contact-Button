@@ -1,5 +1,9 @@
 # VUSharp Contact Button
 
+https://github.com/user-attachments/assets/a865d055-ab85-4f48-a215-838440a10699
+
+
+
 A 3d, tactile, physically interactable button for VRChat Worlds designed as a near-equivalent replacement to a Unity UI Button.  
 
 ## Features
@@ -54,7 +58,10 @@ Then import the contained .unitypackage
 
 Currently there are two button to choose from: the default Contact Button and a Contact Button preconfigured to play sound when clicked.
 
-## Scene
+## Inspector
+
+<img width="482" height="352" alt="Screenshot 2026-02-12 152534" src="https://github.com/user-attachments/assets/97855e15-0bfa-4edb-9082-cd18786a34f8" />
+
 
 ### Serialized Fields
 
