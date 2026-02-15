@@ -8,6 +8,7 @@ namespace Vincil.VUSharp.UI.ContactButton.Example
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class ContactButtonDemo : UdonSharpBehaviour
     {
+        [SerializeField] DemoButtonManager buttonManager;
         [SerializeField] ContactButton allowClickingContactButton;
         [SerializeField] ContactButton clickerContactButton;
         [SerializeField] TextMeshProUGUI clickerButtonTextField;
@@ -24,6 +25,8 @@ namespace Vincil.VUSharp.UI.ContactButton.Example
             toggleUsingContactButtonTextField.text = "Stop Using Contacts";
             clickerButtonTextField.text = "I Can Be Clicked";
             demoTextField.text = $"Times button has been clicked:\n{timesButtonClicked}";
+            buttonManager.AddButtonToManager(clickerContactButton);
+            buttonManager.AddButtonToManager(allowClickingContactButton);
         }
 
         public void _OnAllowButtonClicked()

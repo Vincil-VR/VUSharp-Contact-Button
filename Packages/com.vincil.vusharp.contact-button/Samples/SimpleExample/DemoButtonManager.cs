@@ -24,6 +24,11 @@ namespace Vincil.VUSharp.UI.ContactButton.Example
             }
         }
 
+        public void AddButtonToManager(ContactButton contactButton)
+        {
+            managedButtons.Add(contactButton);
+        }
+
         public void AddCanvasColliderToManager(Collider canvasCollider)
         {
             managedCanvasColliders.Add(canvasCollider);

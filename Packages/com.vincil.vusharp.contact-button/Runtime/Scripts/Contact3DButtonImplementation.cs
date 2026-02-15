@@ -4,6 +4,7 @@ using UdonSharp;
 using UnityEngine;
 using VRC.Dynamics;
 using VRC.SDK3.Data;
+using VRC.SDK3.Dynamics.Contact.Components;
 using VRC.SDKBase;
 using VRC.Udon;
 using VRC.Udon.Common.Interfaces;
@@ -11,7 +12,7 @@ using VRC.Udon.Common.Interfaces;
 namespace Vincil.VUSharp.UI.ContactButton
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    internal class ContactButtonImplementation : Contact3DButton
+    internal class Contact3DButtonImplementation : Contact3DButton
     {
         GameObject _clickableButton;
         GameObject clickableButton
@@ -27,6 +28,23 @@ namespace Vincil.VUSharp.UI.ContactButton
                     }
                 }
                 return _clickableButton;
+            }
+        }
+
+        VRCContactReceiver _contactReceiver;
+        VRCContactReceiver contactReceiver
+        {
+            get
+            {
+                if (_contactReceiver == null)
+                {
+                    _contactReceiver = GetComponent<VRCContactReceiver>();
+                    if (_contactReceiver == null)
+                    {
+                        Debug.LogError($"[ContactButton] Couldn't find a VRCContactReceiver!", gameObject);
+                    }
+                }
+                return _contactReceiver;
             }
         }
 
@@ -313,15 +331,20 @@ namespace Vincil.VUSharp.UI.ContactButton
             }
             else
             {
-                Debug.Log($"[ContactButton] Zeroing button");
                 clickableButton.transform.localPosition = Vector3.zero;
                 contactSenderToTrack = null;
                 buttonRenderer.SetPropertyBlock(null, buttonHighlightMaterialIndex);
+
+                contactReceiver.enabled = false;
+
+                interactableCollider.enabled = false;
             }
         }
 
         private void UpdateColliderOrContactActive()
         {
+            contactReceiver.enabled = isUsingContact && Interactable;
+
             interactableCollider.enabled = !isUsingContact && !isPlayingClickAnimation && Interactable;
             if (interactableCollider.enabled)
             {
@@ -331,9 +354,6 @@ namespace Vincil.VUSharp.UI.ContactButton
             {
                 buttonAnimator.enabled = false;
             }
-
-
-            //3.10.2-beta.1 whitelists the enabled property; need to check if that will work with contacts
         }
 
         private void OnClicked()

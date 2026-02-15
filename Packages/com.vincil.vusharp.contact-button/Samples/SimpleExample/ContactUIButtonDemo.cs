@@ -31,6 +31,16 @@ namespace Vincil.VUSharp.UI.ContactButton.Example
                 buttonManager.AddCanvasColliderToManager(collider);
                 collider.enabled = !isInVR;
             }
+
+            foreach(ContactUIButton button in numberedButtons)
+            {
+                buttonManager.AddButtonToManager(button);
+            }
+            foreach (ContactUIButton button in optionsButtons)
+            {
+                buttonManager.AddButtonToManager(button);
+            }
+            buttonManager.AddButtonToManager(allowClickingButton);
         }
 
         public void _OnMakeTallButtonClicked()
