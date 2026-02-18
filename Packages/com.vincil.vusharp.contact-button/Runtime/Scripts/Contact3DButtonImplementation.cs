@@ -211,6 +211,15 @@ namespace Vincil.VUSharp.UI.ContactButton
             SetInteractable(Interactable);
         }
 
+        private void OnDisable()
+        {
+            if (isClicked)
+            {
+                OnUnclicked();
+            }
+            contactSenderToTrack = null;
+        }
+
         public override void AddOnClickListener(UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName)
         {
             onClickEventReceivers.Add(udonSharpBehaviour);

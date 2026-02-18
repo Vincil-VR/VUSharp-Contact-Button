@@ -116,6 +116,15 @@ namespace Vincil.VUSharp.UI.ContactButton
             _UpdateContactSize();
         }
 
+        private void OnDisable()
+        {
+            if (isClicked)
+            {
+                OnUnclicked();
+            }
+            contactSenderToTrack = null;
+        }
+
         public override void AddOnClickListener(UdonSharpBehaviour udonSharpBehaviour, string MethodToCallName)
         {
             onClickEventReceivers.Add(udonSharpBehaviour);
@@ -251,6 +260,7 @@ namespace Vincil.VUSharp.UI.ContactButton
                 contactReceiver.enabled = false;
                 var colors = uiButton.colors;
                 colors.disabledColor = buttonDisabledColor;
+                contactSenderToTrack = null;
                 uiButton.colors = colors;
                 uiButton.interactable = false;
             }
